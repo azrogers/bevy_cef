@@ -53,6 +53,10 @@ impl ImplApp for BrowserProcessAppBuilder {
             return;
         };
         command_line.append_switch(Some(&"use-mock-keychain".into()));
+        command_line.append_switch_with_value(
+            Some(&"autoplay-policy".into()),
+            Some(&"no-user-gesture-required".into()),
+        );
         #[cfg(feature = "debug")]
         {
             command_line.append_switch(Some(&"disable-gpu".into()));
