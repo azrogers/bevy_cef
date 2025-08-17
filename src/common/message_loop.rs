@@ -21,7 +21,6 @@ impl Plugin for MessageLoopPlugin {
         app.insert_non_send_resource(RunOnMainThread)
             .add_systems(Update, cef_shutdown.run_if(on_event::<AppExit>));
 
-        #[cfg(target_os = "macos")]
         app.add_systems(Main, cef_do_message_loop_work);
     }
 }
@@ -62,9 +61,6 @@ impl Default for MessageLoopPlugin {
             #[cfg(all(target_os = "macos", feature = "debug"))]
             no_sandbox: true as _,
             windowless_rendering_enabled: true as _,
-            #[cfg(any(target_os = "windows", target_os = "linux"))]
-            multi_threaded_message_loop: true as _,
-            #[cfg(target_os = "macos")]
             external_message_pump: true as _,
             ..Default::default()
         };
@@ -85,7 +81,6 @@ impl Default for MessageLoopPlugin {
     }
 }
 
-#[cfg(target_os = "macos")]
 fn cef_do_message_loop_work(_: NonSend<RunOnMainThread>) {
     cef::do_message_loop_work();
 }
