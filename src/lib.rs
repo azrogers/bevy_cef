@@ -20,6 +20,7 @@ use bevy_remote::RemotePlugin;
 
 pub mod prelude {
     pub use crate::{CefPlugin, RunOnMainThread, common::*, navigation::*, webview::prelude::*};
+    pub use bevy_cef_core::prelude::execute_render_process;
 }
 
 pub struct RunOnMainThread;
