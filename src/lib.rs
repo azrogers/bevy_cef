@@ -9,6 +9,8 @@ mod system_param;
 mod webview;
 mod zoom;
 
+use std::path::PathBuf;
+
 use crate::common::{LocalHostPlugin, MessageLoopPlugin, WebviewCoreComponentsPlugin};
 use crate::cursor_icon::SystemCursorIconPlugin;
 use crate::keyboard::KeyboardPlugin;
@@ -25,13 +27,21 @@ pub mod prelude {
 
 pub struct RunOnMainThread;
 
-pub struct CefPlugin;
+#[derive(Default)]
+pub struct CefConfig {
+    pub browser_subprocess_path: Option<PathBuf>,
+}
+
+#[derive(Default)]
+pub struct CefPlugin {
+    pub config: CefConfig,
+}
 
 impl Plugin for CefPlugin {
     fn build(&self, app: &mut App) {
         app.add_plugins((
             LocalHostPlugin,
-            MessageLoopPlugin::default(),
+            MessageLoopPlugin::new(&self.config),
             WebviewCoreComponentsPlugin,
             WebviewPlugin,
             IpcPlugin,

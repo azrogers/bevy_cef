@@ -1,4 +1,4 @@
-use crate::RunOnMainThread;
+use crate::{CefConfig, RunOnMainThread};
 use bevy::prelude::*;
 use bevy_cef_core::prelude::*;
 use cef::args::Args;
@@ -25,8 +25,8 @@ impl Plugin for MessageLoopPlugin {
     }
 }
 
-impl Default for MessageLoopPlugin {
-    fn default() -> Self {
+impl MessageLoopPlugin {
+    pub fn new(config: &CefConfig) -> Self {
         #[cfg(target_os = "macos")]
         let _loader = {
             macos::install_cef_app_protocol();
@@ -56,8 +56,11 @@ impl Default for MessageLoopPlugin {
                 .to_str()
                 .unwrap()
                 .into(),
-            #[cfg(all(target_os = "macos", feature = "debug"))]
-            browser_subprocess_path: debug_render_process_path().to_str().unwrap().into(),
+            browser_subprocess_path: if let Some(path) = &config.browser_subprocess_path {
+                path.to_str().unwrap().into()
+            } else {
+                Default::default()
+            },
             #[cfg(all(target_os = "macos", feature = "debug"))]
             no_sandbox: true as _,
             windowless_rendering_enabled: true as _,
