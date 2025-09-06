@@ -206,7 +206,7 @@ impl Browsers {
 
     pub fn resize(&self, webview: &Entity, size: Vec2) {
         if let Some(browser) = self.browsers.get(webview) {
-            browser.size.set(size);
+            browser.size.set(Vec2::new(size.max(1.0), size.max(1.0)));
             browser.host.was_resized();
         }
     }
